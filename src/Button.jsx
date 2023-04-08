@@ -3,7 +3,7 @@ const Button = ({ buttonType }) => {
       <button className={buttonType}>
           {buttonType}
       </button>
-  )
+  );
 };
 
 export default Button;
