@@ -1,5 +1,4 @@
 import Header from "./Header";
-import {useState} from "react";
 import ipAddress from "./api/ip";
 
 const Prepare = () => {
