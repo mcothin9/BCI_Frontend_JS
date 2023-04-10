@@ -4,7 +4,7 @@ import ipAddress from "./api/ip";
 const Prepare = () => {
     return (
         <div>
-            <Header buttonType={'start'} ipAddress={ipAddress} />
+            <Header buttonType={'start'} path={'plot'} ipAddress={ipAddress} />
             <div>Prepare Page</div>
         </div>
     );
