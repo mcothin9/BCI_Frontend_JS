@@ -1,5 +1,5 @@
 const resultAPI = async (time, result) => {
-    const url = 'https://localhost:';
+    const url = 'https://localhost:'; //TODO: get result from url
 
     const requestOptions = {
         method: 'POST',

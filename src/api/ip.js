@@ -1,15 +1,24 @@
 function getIpAddressFromURL() {
     const url = window.location.href;
     const ipAddressPattern = /\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/;
-    const ipAddressMatch = url.match(ipAddressPattern);
+    const ipLocalPattern = /\b\d{2,4}\b/;
+    const ipGlobalMatch = url.match(ipAddressPattern);
+    const ipLocalMatch = url.match(ipLocalPattern);
 
-    if (ipAddressMatch) {
-        return ipAddressMatch[0];
-    } else {
+    if (ipGlobalMatch) {
+        return ({
+            type: 'global',
+            address: ipGlobalMatch[0],
+        });
+    } else if (ipLocalMatch) {
+        return ({
+            type: 'local',
+            address: ipLocalMatch[0],
+        });
+    }
+    else {
         return null;
     }
 }
 
-const ipAddress = getIpAddressFromURL();
-
-export default ipAddress;
+export default getIpAddressFromURL();

@@ -8,8 +8,24 @@ const Button = ({ buttonType, path }) => {
         });
     }
 
+    const styles = {
+        navigateButton: {
+            width: '60px',
+            height: '15px',
+            backgroundColor: 'lightyellow',
+            display: 'inline-block',
+            // padding: '20px 30px',
+            paddingTop: '5px',
+            paddingBottom: '20px',
+            border: '1px solid aliceblue',
+            cursor: 'pointer',
+            borderRadius: '5px',
+            color: 'gray',
+        },
+    }
+
     return (
-        <button className={buttonType} onClick={routeChange}>
+        <button style={styles.navigateButton} onClick={routeChange}>
             {buttonType}
         </button>
     );
