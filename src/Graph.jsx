@@ -6,10 +6,10 @@ const Graph = ({ data }) => {
         if (!data) return [];
 
         return [
-            { name: "rt1", value: data.rt1 },
-            { name: "rt2", value: data.rt2 },
-            { name: "rt3", value: data.rt3 },
-            { name: "rt4", value: data.rt4 },
+            { name: "rt1", value: data[0] },
+            { name: "rt2", value: data[1] },
+            { name: "rt3", value: data[2] },
+            { name: "rt4", value: data[3] },
         ];
     };
 

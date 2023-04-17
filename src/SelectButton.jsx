@@ -1,5 +1,5 @@
 
-const SelectButton = ({ buttonType }) => {
+const SelectButton = ({ buttonType, onClickEvent }) => {
 
     const styles = {
         clickButton: {
@@ -18,7 +18,7 @@ const SelectButton = ({ buttonType }) => {
     }
 
     return (
-        <button style={styles.clickButton} onClick={()=>null}>
+        <button style={styles.clickButton}>
             {buttonType}
         </button>
     );
