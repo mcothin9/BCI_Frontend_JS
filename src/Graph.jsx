@@ -14,7 +14,7 @@ const Graph = ({ data }) => {
     };
 
     return (
-        <ResponsiveContainer width="100%" height={400}>
+        <ResponsiveContainer width="100%" height={450}>
             <BarChart data={prepareChartData()}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />

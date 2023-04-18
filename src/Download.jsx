@@ -28,7 +28,6 @@ const Download = () => {
         <div>
             <Header buttonType={'menu'} path={'/'} />
             <Body>
-                {/*<SelectButton buttonType={'Download'} onClickEvent={downloadCSV} />*/}
                 <button style={{
                     width: '100px',
                     height: '20px',

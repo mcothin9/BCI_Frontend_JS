@@ -55,7 +55,6 @@ const Result = () => {
             height: "100%"
         }}>
             <p><b>Processing Time:</b> {processTime}</p>
-            <div>=======================================================================</div>
             <Graph data={getCurrentData()} />
         </div>
     );

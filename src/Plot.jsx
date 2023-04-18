@@ -1,10 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import React from 'react';
 import Header from "./Header";
 import Body from "./Body";
 import Result from "./Result";
-import Graph from "./Graph";
 
 const Plot = () => {
     return (
