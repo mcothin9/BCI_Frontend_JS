@@ -9,15 +9,30 @@ const Result = () => {
 
     const { setPredictData } = useContext(PredictDataContext);
 
+    const saveDataToLocalStorage = (data) => {
+        const maxSavedData = 5;
+        let savedData = JSON.parse(localStorage.getItem("predictData")) || [];
+
+        savedData.push(data);
+        if (savedData.length > maxSavedData) {
+            savedData.shift();
+        }
+
+        localStorage.setItem("predictData", JSON.stringify(savedData));
+    };
+
+
     const fetchData = async () => {
         try {
             // const response = await fetch("http://localhost:3001/data"); // Get from js server
-            const response = await fetch("http://127.0.0.1:5000/probs"); // Get from py
+            const response = await fetch("http://192.168.0.88:5000/probs"); // Get from py
             const jsonData = await response.json(); // Destruct to json
             const { probs: predictData } = jsonData; // Destruct to array
 
             setData(predictData);
             setPredictData(predictData); // Send to useContext
+
+            saveDataToLocalStorage(predictData);
         } catch (e) {
             console.error("Error fetching data from plot: ", e);
         }
