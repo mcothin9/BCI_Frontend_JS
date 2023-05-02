@@ -21,13 +21,20 @@ const Result = () => {
         localStorage.setItem("predictData", JSON.stringify(savedData));
     };
 
-
     const fetchData = async () => {
         try {
             // const response = await fetch("http://localhost:3001/data"); // Get from js server
-            const response = await fetch("http://192.168.0.88:5000/probs"); // Get from py
+            // Raspberry Pi version
+            // const response = await fetch("http://192.168.0.88:5777/probs");
+            // console.log("Response: " + response);
+
+            // Local test version
+            const response = await fetch("http://172.19.114.185:5777/probs");
+
             const jsonData = await response.json(); // Destruct to json
             const { probs: predictData } = jsonData; // Destruct to array
+
+            // console.log("probs: " + predictData);
 
             setData(predictData);
             setPredictData(predictData); // Send to useContext
