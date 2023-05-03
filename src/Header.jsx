@@ -1,9 +1,8 @@
 import React from 'react';
-import Button from "./Button";
 import getIpAddressFromURL from "./api/ip";
 
 
-const Header = ({ buttonType, path }) => {
+const Header = () => {
     const {type, address} = getIpAddressFromURL;
 
     const styles = {
@@ -25,14 +24,12 @@ const Header = ({ buttonType, path }) => {
         return (
             <div style={styles.header}>
                 <p style={styles.ipAddress}>Global Connection from { address } to {address} </p>
-                <Button buttonType={buttonType} path={path} />
             </div>
         );
     } else if (type === 'local') {
         return (
             <div style={styles.header}>
                 <p style={styles.ipAddress}>Local Connection from { address } </p>
-                <Button buttonType={buttonType} path={path} />
             </div>
         );
     } else {

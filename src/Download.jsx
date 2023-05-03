@@ -10,8 +10,11 @@ const Download = () => {
     };
 
     useEffect(() => {
-        setSavedData(loadDataFromLocalStorage());
+        const data = loadDataFromLocalStorage();
+        console.log("Loaded data from localStorage:", data);
+        setSavedData(data);
     }, []);
+
 
     const downloadCSVByIndex = (index) => {
         if (index >= 0 && index < savedData.length) {
