@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import Graph from "./Graph";
 import PredictDataContext from "./DownloadDataContext";
 
-const Plot = () => {
+const Plot = ({ isPlotting }) => {
     let [data, setData] = useState([]);
     let [processTime, setProcessTime] = useState(0);
     let [loading, setLoading] = useState(false);
@@ -62,6 +62,14 @@ const Plot = () => {
             clearInterval(interval);
         };
     }, [loading]);
+
+    useEffect(() => {
+        if (isPlotting) {
+            fetchData().then((r) => setLoading(true));
+        } else {
+            setLoading(false);
+        }
+    }, [isPlotting]);
 
     return (
         <div
