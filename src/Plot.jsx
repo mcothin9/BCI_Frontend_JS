@@ -3,9 +3,14 @@ import Graph from "./Graph";
 import PredictDataContext from "./DownloadDataContext";
 
 const Plot = ({ isPlotting }) => {
+
+    const testIpAddress = "http://192.168.0.133:5777";
+    // const testIpAddress = "http://172.19.114.185:5777";
+
     let [data, setData] = useState([]);
     let [processTime, setProcessTime] = useState(0);
     let [loading, setLoading] = useState(false);
+    const [dataFetched, setDataFetched] = useState(false);
 
     const { setPredictData } = useContext(PredictDataContext);
 
@@ -27,10 +32,11 @@ const Plot = ({ isPlotting }) => {
             // const response = await fetch("http://192.168.0.88:5777/probs");
 
             // Local test version
-            const response = await fetch("http://172.19.114.185:5777/probs");
+            const response = await fetch(testIpAddress + "/probs");
 
             const jsonData = await response.json(); // Destruct to json
             const { probs: predictData } = jsonData; // Destruct to array
+            console.log(predictData.length);
 
             setData(predictData);
             setPredictData(predictData); // Send to useContext
@@ -50,22 +56,22 @@ const Plot = ({ isPlotting }) => {
     };
 
     useEffect(() => {
-        fetchData().then((r) => setLoading(true));
-    }, []);
-
-    useEffect(() => {
         const interval = setInterval(() => {
-            updateTime();
+            // updateTime();
+            if (isPlotting) {
+                updateTime();
+            }
         }, 1000);
 
         return () => {
             clearInterval(interval);
         };
-    }, [loading]);
+    }, [isPlotting]);
 
     useEffect(() => {
-        if (isPlotting) {
+        if (isPlotting && !dataFetched) {
             fetchData().then((r) => setLoading(true));
+            setDataFetched(true);
         } else {
             setLoading(false);
         }

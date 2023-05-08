@@ -25,14 +25,28 @@ const Main = () => {
     return (
         <div>
             <Header />
-            <div className="main-container">
-                <div className="button-container">
+            <div className="main-container" style={{
+                display: "flex",
+                flexDirection: "row",
+            }}>
+                <div className="button-container" style={{
+                    width: "15%",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-around",
+                }}>
                     <StartButton onClick={handleStart} disabled={isPlotting || isFinished} />
                     <StopButton onClick={handleStop} disabled={!isPlotting} />
                     <DownloadButton />
                 </div>
-                <div className="plot-container">
-                    <RawPlot isPlotting={isPlotting} onFinish={handleFinish} />
+                <div className="plot-container" style={{
+                    border: "solid",
+                    width: "75%",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                }}>
+                    {/*<RawPlot isPlotting={isPlotting} onFinish={handleFinish} />*/}
                     <Plot isPlotting={isPlotting} />
                 </div>
             </div>

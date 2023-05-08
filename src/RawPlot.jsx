@@ -20,7 +20,7 @@ const RawPlot = ({ isPlotting, onFinish }) => {
         if (!fetchingData) {
             setFetchingData(true);
             if (data.length === 0) {
-                fetchData();
+                fetchData().then(r => null);
             }
         }
     };
@@ -51,9 +51,8 @@ const RawPlot = ({ isPlotting, onFinish }) => {
 
     return (
         <div>
-            <button onClick={startPlotting}>Start</button>
-            <button onClick={stopPlotting}>Stop</button>
-            <BrainwaveGraph data={data} />
+            {/*<BrainwaveGraph data={data} />*/}
+            <div>BrainWaveGraph</div>
         </div>
     );
 };

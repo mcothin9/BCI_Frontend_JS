@@ -1,7 +1,12 @@
-import React from "react";
-import { Line } from "react-chartjs-2";
+import React, {useEffect, useState} from 'react';
+import { Chart, LinearScale, CategoryScale } from "react-chartjs-2";
 
 const BrainwaveGraph = ({ data }) => {
+
+    Chart.register(LinearScale, CategoryScale);
+
+    const [chartInstance, setChartInstance] = useState(null);
+
     const generateDataset = () => {
         const datasets = [];
         for (let i = 0; i < 25; i++) {
@@ -26,6 +31,7 @@ const BrainwaveGraph = ({ data }) => {
                 display: false,
             },
             y: {
+                type: 'linear',
                 min: -0.0065,
                 max: 0.0002,
                 ticks: {
@@ -35,9 +41,27 @@ const BrainwaveGraph = ({ data }) => {
         },
     };
 
+    useEffect(() => {
+        if (chartInstance) {
+            chartInstance.destroy();
+        }
+    }, [data]);
+
+    const handleRef = (node) => {
+        if (node) {
+            setChartInstance(
+                new Chart(node.getContext('2d'), {
+                    type: 'line',
+                    data: chartData,
+                    options: options,
+                })
+            );
+        }
+    };
+
     return (
         <div>
-            <Line data={chartData} options={options} />
+            <canvas ref={handleRef}></canvas>
         </div>
     );
 };
