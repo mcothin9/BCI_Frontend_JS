@@ -1,58 +1,76 @@
 import React, { useState, useEffect } from "react";
 import BrainwaveGraph from "./BrainwaveGraph";
 
-const RawPlot = ({ isPlotting, onFinish }) => {
+const RawPlot = ({ isPlotting }) => {
+
+    const testIpAddress = "http://0.0.0.0:5777";
+    // const testIpAddress = "http://172.19.114.185:5777";
+
     const [data, setData] = useState([]);
-    const [fetchingData, setFetchingData] = useState(false);
+    const [processTime, setProcessTime] = useState(0);
+    const [dataFetched, setDataFetched] = useState(false);
+    let fetchCount = 0;
 
     const fetchData = async () => {
         try {
-            // Replace this URL with your backend server URL
-            const response = await fetch("http://127.0.0.1:5000/brainwave-data");
+            // fetchCount += 1;
+            // console.log(fetchCount);
+            const response = await fetch(testIpAddress + "/raw");
             const jsonData = await response.json();
-            setData((prevData) => [...prevData, ...jsonData]);
+            const { raw: rawData } = jsonData;
+            // console.log(rawData);
+            setData(rawData);
         } catch (e) {
             console.error("Error fetching data from plot: ", e);
         }
     };
 
-    const startPlotting = () => {
-        if (!fetchingData) {
-            setFetchingData(true);
-            if (data.length === 0) {
-                fetchData().then(r => null);
+    const getCurrentData = () => {
+        if (!isPlotting) {
+            return Array(25).fill(0);
+        }
+        const dataIndex = processTime * 10;
+        return data.length > 0 && dataIndex < data.length ? data.slice(0, dataIndex + 1) : Array(25).fill(0);
+    };
+
+    fetchData().then(r => setDataFetched(true));
+
+    const updateTime = () => {
+        setProcessTime((prevState) => prevState + 0.1);
+    };
+
+    // useEffect(() => {
+    //     if (isPlotting && !dataFetched) {
+    //         fetchData().then(r => setDataFetched(true));
+    //     }
+    // }, [isPlotting, dataFetched]);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (isPlotting) {
+                updateTime();
             }
-        }
-    };
+        }, 100);
 
-    const stopPlotting = () => {
-        setFetchingData(false);
-    };
+        return () => {
+            clearInterval(interval);
+        };
+    }, [isPlotting]);
 
-    useEffect(() => {
-        if (fetchingData) {
-            const interval = setInterval(() => {
-                fetchData();
-            }, 100);
+    // useEffect(() => {
+    //     if (isPlotting && processTime % 10 === 0) {
+    //         fetchData().then(r => null);
+    //     }
+    // }, [processTime]);
 
-            return () => {
-                clearInterval(interval);
-            };
-        }
-    }, [fetchingData]);
-
-    useEffect(() => {
-        if (isPlotting && !fetchingData) {
-            setFetchingData(true);
-        } else if (!isPlotting && fetchingData) {
-            setFetchingData(false);
-        }
-    }, [isPlotting, fetchingData]);
+    // TODO: Test data
+    // fetchData().then(r => console.log("Finish once ===================="));
+    // console.log("Type of data: " + typeof data);
 
     return (
         <div>
-            {/*<BrainwaveGraph data={data} />*/}
-            <div>BrainWaveGraph</div>
+            <p>Raw data process: {processTime} </p>
+            <BrainwaveGraph data={getCurrentData()} />
         </div>
     );
 };

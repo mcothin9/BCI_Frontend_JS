@@ -4,7 +4,7 @@ import PredictDataContext from "./DownloadDataContext";
 
 const Plot = ({ isPlotting }) => {
 
-    const testIpAddress = "http://192.168.0.133:5777";
+    const testIpAddress = "http://0.0.0.0:5777";
     // const testIpAddress = "http://172.19.114.185:5777";
 
     let [data, setData] = useState([]);
@@ -28,10 +28,6 @@ const Plot = ({ isPlotting }) => {
 
     const fetchData = async () => {
         try {
-            // Raspberry Pi version
-            // const response = await fetch("http://192.168.0.88:5777/probs");
-
-            // Local test version
             const response = await fetch(testIpAddress + "/probs");
 
             const jsonData = await response.json(); // Destruct to json
