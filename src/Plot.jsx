@@ -71,6 +71,7 @@ const Plot = ({ isPlotting }) => {
                     subArrayIndex++;
                 } else {
                     clearInterval(sendSubArrayToGraph);
+                    localforage.removeItem(`probs_${readCount}`)
                     setReadCount(readCount + 1);
                 }
             }, 1000);
