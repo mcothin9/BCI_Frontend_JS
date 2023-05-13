@@ -96,7 +96,7 @@ const Plot = ({ isPlotting }) => {
                         clearInterval(readDataInterval);
                     };
                 }
-            }, 10000);
+            }, 15000);
         }
     }, [isPlotting]);
 

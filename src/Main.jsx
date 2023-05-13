@@ -46,7 +46,7 @@ const Main = () => {
                     flexDirection: "column",
                     alignItems: "center",
                 }}>
-                    <RawPlot isPlotting={isPlotting} />
+                    {/*<RawPlot isPlotting={isPlotting} />*/}
                     <Plot isPlotting={isPlotting} />
                 </div>
             </div>
