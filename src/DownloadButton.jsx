@@ -1,6 +1,24 @@
 import React, { useState } from 'react';
 
 const DownloadButton = () => {
+    const style = {
+        button: {
+            backgroundColor: "cornflowerblue",
+            color: "white",
+            height: "50px",
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: "20px",
+            transition: "all 0.3s ease-in-out"
+        },
+        buttonHover: {
+            backgroundColor: "blue",
+            textDecoration: "underline"
+        }
+    }
+
     const [dropdownValue, setDropdownValue] = useState("");
 
     const handleChange = (event) => {
@@ -54,6 +72,8 @@ const DownloadButton = () => {
                 className="button"
                 onClick={handleDownload}
                 disabled={dropdownValue === ""}
+                style={style.button}
+                onMouseOver={() => { style.button = style.buttonHover }} onMouseOut={() => { style.button = style.button }}
             >
                 Download
             </button>

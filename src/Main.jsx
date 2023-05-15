@@ -28,9 +28,17 @@ const Main = () => {
             <div className="main-container" style={{
                 display: "flex",
                 flexDirection: "row",
+                height: "600px",
+                // border: "solid",
             }}>
                 <div className="button-container" style={{
                     width: "15%",
+                    height: "400px",
+                    position: "sticky",
+                    top: "50%",
+                    transform: "translateY(-25%)",
+                    // backgroundColor: "lightgray",
+                    // opacity: "0.8",
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "space-around",
@@ -40,14 +48,13 @@ const Main = () => {
                     <DownloadButton />
                 </div>
                 <div className="plot-container" style={{
-                    border: "solid",
                     width: "75%",
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
                 }}>
+                    <Plot isPlotting={isPlotting} />
                     <RawPlot isPlotting={isPlotting} />
-                    {/*<Plot isPlotting={isPlotting} />*/}
                 </div>
             </div>
         </div>

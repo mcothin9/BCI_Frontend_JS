@@ -92,8 +92,8 @@ const RawPlot = ({ isPlotting }) => {
 
     return (
         <div>
-            <p>Raw data process: {time} </p>
-            <p>Real time: {realTime} </p>
+            {/*<p>Raw data process: {time} </p>*/}
+            {/*<p>Real time: {realTime} </p>*/}
             <BrainwaveGraph data={data} />
         </div>
     );

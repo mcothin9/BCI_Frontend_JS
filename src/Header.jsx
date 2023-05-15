@@ -1,7 +1,6 @@
 import React from 'react';
 import getIpAddressFromURL from "./api/ip";
 
-
 const Header = () => {
     const {type, address} = getIpAddressFromURL;
 
@@ -13,7 +12,7 @@ const Header = () => {
             alignItems: 'center',
             padding: '10px',
             backgroundColor: 'cornflowerblue',
-            height: '4rem'
+            height: '2rem'
         },
         ipAddress: {
             color: 'white',
