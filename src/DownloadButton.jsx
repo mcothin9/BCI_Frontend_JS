@@ -32,13 +32,13 @@ const DownloadButton = () => {
     const downloadCSVByIndex = (index) => {
         const savedData = getSavedData();
         if (index >= 0 && index < savedData.length) {
-            const dataToDownload = savedData[index];
+            const dataToDownload = savedData[index].data;
             const csvContent = arrayToCSV(dataToDownload);
             const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
             const url = URL.createObjectURL(blob);
             const link = document.createElement("a");
             link.setAttribute("href", url);
-            link.setAttribute("download", `predictData-${index + 1}.csv`);
+            link.setAttribute("download", `predictData-latest-${index + 1}.csv`);
             link.style.visibility = "hidden";
             document.body.appendChild(link);
             link.click();
@@ -49,19 +49,29 @@ const DownloadButton = () => {
     };
 
     const handleDownload = () => {
-        const selectedIndex = parseInt(dropdownValue.split("_")[1]) - 1;
+        const selectedIndex = parseInt(dropdownValue.split("_")[1]);
         downloadCSVByIndex(selectedIndex);
     };
 
+    // const getSavedData = () => {
+    //     return JSON.parse(localStorage.getItem("predictData")) || [];
+    // };
+
     const getSavedData = () => {
-        return JSON.parse(localStorage.getItem("predictData")) || [];
+        const keys = JSON.parse(localStorage.getItem("resultKeys")) || [];
+        return keys.map(key => {
+            return {
+                key,
+                data: JSON.parse(localStorage.getItem(key))
+            };
+        });
     };
 
     const generateOptions = () => {
         const savedData = getSavedData();
-        return savedData.map((_, index) => (
-            <option key={`result_${index + 1}`} value={`result_${index + 1}`}>
-                {`result_${index + 1}`}
+        return savedData.map((item, index) => (
+            <option key={`result_${index + 1}`} value={`latest_${index}`}>
+                {`latest_${index + 1}`}
             </option>
         ));
     };

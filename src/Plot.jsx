@@ -20,21 +20,41 @@ const Plot = ({ isPlotting, onReadData }) => {
         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         const charactersLength = characters.length;
         let counter = 0;
-        while (counter < length) {
+        while (counter < idLength) {
             result += characters.charAt(Math.floor(Math.random() * charactersLength));
             counter += 1;
         }
         return result;
     }
-    const resultIdInLocalstorage = makeId(8);
+    const [resultIdInLocalstorage] = useState(makeId(8));
+    console.log(resultIdInLocalstorage); // Debugging line
 
+    // Save data in this process into same address (key) in localstorage
     const saveDataToLocalStorage = (data) => {
         const savedData = JSON.parse(localStorage.getItem(resultIdInLocalstorage)) || [];
         const newResult = [...savedData, ...data];
+        console.log("newResult =============="); // Debugging line
+        console.log(newResult); // Debugging line
         localStorage.setItem(resultIdInLocalstorage, JSON.stringify(newResult));
         // Send new result to userContext
         setPredictData(newResult);
     };
+
+    // Update the reference (key) list of saved result in localstorage
+    const updateResultKeys = (key) => {
+        let resultKeys = JSON.parse(localStorage.getItem("resultKeys")) || [];
+        console.log("resultKeys"); // Debugging line
+        console.log(resultKeys); // Debugging line
+        if (resultKeys.length >= 5) {
+            // remove the last key and its associated data
+            const lastKey = resultKeys.pop();
+            localStorage.removeItem(lastKey);
+        }
+        // add the new key at the beginning
+        resultKeys.unshift(key);
+        localStorage.setItem("resultKeys", JSON.stringify(resultKeys));
+    };
+
 
     const fetchData = async () => {
         try {
@@ -49,11 +69,6 @@ const Plot = ({ isPlotting, onReadData }) => {
             });
 
             saveDataToLocalStorage(predictData);
-
-            // Get existing data from localStorage, append new data and save back to localStorage
-            // let existingData = JSON.parse(localStorage.getItem(`result_${fetchCount}`)) || [];
-            // existingData.push(...predictData);
-            // localStorage.setItem(`result_${fetchCount}`, JSON.stringify(existingData));
         } catch (e) {
             console.error("Error fetching data from plot: ", e);
         }
@@ -84,6 +99,7 @@ const Plot = ({ isPlotting, onReadData }) => {
         if (isPlotting) {
             if (!dataFetched) {
                 fetchData().then(r => setDataFetched(true));
+                updateResultKeys(resultIdInLocalstorage);
             }
 
             // Delay the readData function by 10 seconds after first fetch success
