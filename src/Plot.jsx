@@ -8,8 +8,8 @@ const Plot = ({ isPlotting }) => {
     const testIpAddress = "http://0.0.0.0:5777";
     // const testIpAddress = "http://172.19.114.185:5777";
 
-    const [fetchCount, setFetchCount] = useState(0);
-    const [readCount, setReadCount] = useState(0);
+    let fetchCount = 0;
+    let readCount = 0;
     const [data, setData] = useState([]);
     const [dataFetched, setDataFetched] = useState(false);
     const { setPredictData } = useContext(PredictDataContext);
@@ -44,7 +44,7 @@ const Plot = ({ isPlotting }) => {
 
             // Save data to localForage
             localforage.setItem(`probs_${fetchCount}`, predictData).then(() => {
-                setFetchCount((prevState) => prevState + 1);
+                fetchCount += 1;
                 fetchData();
             });
 
@@ -72,7 +72,7 @@ const Plot = ({ isPlotting }) => {
                 } else {
                     clearInterval(sendSubArrayToGraph);
                     localforage.removeItem(`probs_${readCount}`)
-                    setReadCount(readCount + 1);
+                    readCount += 1;
                 }
             }, 1000);
         } catch (e) {
@@ -97,7 +97,7 @@ const Plot = ({ isPlotting }) => {
                         clearInterval(readDataInterval);
                     };
                 }
-            }, 10000);
+            }, 60000);
         }
     }, [isPlotting]);
 
