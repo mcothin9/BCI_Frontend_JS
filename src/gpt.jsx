@@ -26,7 +26,7 @@ const BrainwaveGraph = ({ data }) => {
                 <div
                     id={'Channel_' + i}
                     key={'Channel_' + i}
-                    style={{height: '100%'}}
+                    style={{height: '4.5%', width: '100%', border: 'solid'}}
                 >
                     {'Channel_' + i}
                 </div>

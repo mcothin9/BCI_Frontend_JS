@@ -26,7 +26,7 @@ const RawPlot = ({ isPlotting }) => {
             localforage.setItem(`raw_${fetchCount}`, rawData).then(() => {
                 fetchCount += 1;
                 // setFetchCount(fetchCount + 1);
-                console.log("Fetch: "+fetchCount);
+                console.log("Raw Fetch: "+fetchCount);
                 fetchData();
             });
         } catch (e) {
@@ -49,7 +49,7 @@ const RawPlot = ({ isPlotting }) => {
                     localforage.removeItem(`raw_${readCount}`);
                     readCount += 1;
                     // setReadCount((prevState) => prevState + 1);
-                    console.log("ReadCount: "+readCount);
+                    console.log("Raw ReadCount: "+readCount);
                 }
             }, 1000);
         } catch (e) {
