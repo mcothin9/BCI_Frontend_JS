@@ -5,10 +5,12 @@ import Plot from "./Plot";
 import StartButton from "./StartButton";
 import StopButton from "./StopButton";
 import DownloadButton from "./DownloadButton";
+import Popup from "./Popup";
 
 const Main = () => {
     const [isPlotting, setIsPlotting] = useState(false);
     const [isFinished, setIsFinished] = useState(false);
+    const [isReadingData, setIsReadingData] = useState(false);
 
     const handleStart = () => {
         setIsPlotting(true);
@@ -25,10 +27,13 @@ const Main = () => {
     return (
         <div>
             <Header />
+            <Popup isOpen={isPlotting && !isReadingData} message={"Preparing Data"} />
             <div className="main-container" style={{
                 display: "flex",
                 flexDirection: "row",
                 height: "600px",
+                position: "sticky",
+                top: "0",
                 // border: "solid",
             }}>
                 <div className="button-container" style={{
@@ -53,7 +58,7 @@ const Main = () => {
                     flexDirection: "column",
                     alignItems: "center",
                 }}>
-                    <Plot isPlotting={isPlotting} />
+                    <Plot isPlotting={isPlotting} onReadData={() => setIsReadingData(true)} />
                     <RawPlot isPlotting={isPlotting} />
                 </div>
             </div>

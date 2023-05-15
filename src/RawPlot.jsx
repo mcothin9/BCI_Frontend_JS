@@ -78,17 +78,18 @@ const RawPlot = ({ isPlotting }) => {
         }
     }, [isPlotting]);
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            if (isPlotting) {
-                setRealTime((prevState) => prevState + 1);
-            }
-        }, 1000);
-
-        return () => {
-            clearInterval(interval);
-        }
-    }, [isPlotting]);
+    // Test time
+    // useEffect(() => {
+    //     const interval = setInterval(() => {
+    //         if (isPlotting) {
+    //             setRealTime((prevState) => prevState + 1);
+    //         }
+    //     }, 1000);
+    //
+    //     return () => {
+    //         clearInterval(interval);
+    //     }
+    // }, [isPlotting]);
 
     return (
         <div>

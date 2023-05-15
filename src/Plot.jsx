@@ -3,7 +3,7 @@ import localforage from "localforage";
 import Graph from "./Graph";
 import PredictDataContext from "./DownloadDataContext";
 
-const Plot = ({ isPlotting }) => {
+const Plot = ({ isPlotting, onReadData }) => {
 
     const testIpAddress = "http://0.0.0.0:5777";
     // const testIpAddress = "http://172.19.114.185:5777";
@@ -90,6 +90,7 @@ const Plot = ({ isPlotting }) => {
             setTimeout(() => {
                 if (isPlotting) {
                     const readDataInterval = setInterval(() => {
+                        onReadData();
                         readData().then(r => null);
                     }, 10000); // Read data every 10 seconds
 
