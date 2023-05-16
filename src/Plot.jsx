@@ -4,12 +4,12 @@ import Graph from "./Graph";
 import PredictDataContext from "./DownloadDataContext";
 
 const Plot = ({ isPlotting, onReadData }) => {
-
     const testIpAddress = "http://0.0.0.0:5777";
     // const testIpAddress = "http://172.19.114.185:5777";
 
     let fetchCount = 0;
     let readCount = 0;
+    let shouldFetch = isPlotting;
     const [data, setData] = useState([]);
     const [dataFetched, setDataFetched] = useState(false);
     const { setPredictData } = useContext(PredictDataContext);
@@ -27,14 +27,12 @@ const Plot = ({ isPlotting, onReadData }) => {
         return result;
     }
     const [resultIdInLocalstorage] = useState(makeId(8));
-    console.log(resultIdInLocalstorage); // Debugging line
+    // console.log(resultIdInLocalstorage); // Debugging line
 
     // Save data in this process into same address (key) in localstorage
     const saveDataToLocalStorage = (data) => {
         const savedData = JSON.parse(localStorage.getItem(resultIdInLocalstorage)) || [];
         const newResult = [...savedData, ...data];
-        console.log("newResult =============="); // Debugging line
-        console.log(newResult); // Debugging line
         localStorage.setItem(resultIdInLocalstorage, JSON.stringify(newResult));
         // Send new result to userContext
         setPredictData(newResult);
@@ -43,8 +41,6 @@ const Plot = ({ isPlotting, onReadData }) => {
     // Update the reference (key) list of saved result in localstorage
     const updateResultKeys = (key) => {
         let resultKeys = JSON.parse(localStorage.getItem("resultKeys")) || [];
-        console.log("resultKeys"); // Debugging line
-        console.log(resultKeys); // Debugging line
         if (resultKeys.length >= 5) {
             // remove the last key and its associated data
             const lastKey = resultKeys.pop();
@@ -58,17 +54,21 @@ const Plot = ({ isPlotting, onReadData }) => {
 
     const fetchData = async () => {
         try {
-            const response = await fetch(testIpAddress + "/probs");
-            const jsonData = await response.json(); // Destruct to json
-            const { probs: predictData } = jsonData; // Destruct to array
+            // Only fetch if shouldFetch is true
+            if (shouldFetch) {
+                const response = await fetch(testIpAddress + "/probs");
+                const jsonData = await response.json();
+                const { probs: predictData } = jsonData;
 
-            // Save data to localForage
-            localforage.setItem(`probs_${fetchCount}`, predictData).then(() => {
-                fetchCount += 1;
-                fetchData();
-            });
+                localforage.setItem(`probs_${fetchCount}`, predictData).then(() => {
+                    fetchCount += 1;
+                    if (shouldFetch) {
+                        fetchData();
+                    }
+                });
 
-            saveDataToLocalStorage(predictData);
+                saveDataToLocalStorage(predictData);
+            }
         } catch (e) {
             console.error("Error fetching data from plot: ", e);
         }
@@ -76,11 +76,17 @@ const Plot = ({ isPlotting, onReadData }) => {
 
 
     const readData = async () => {
+        if (!isPlotting) {
+            return;
+        }
         try {
             const readData = await localforage.getItem(`probs_${readCount}`);
-            // loop through the readData array and send each sub-array to the Graph every second
             let subArrayIndex = 0;
             const sendSubArrayToGraph = setInterval(() => {
+                if (!isPlotting) {
+                    clearInterval(sendSubArrayToGraph);
+                    return;
+                }
                 if (subArrayIndex < readData.length) {
                     setData(readData[subArrayIndex]);
                     subArrayIndex++;

@@ -6,7 +6,8 @@ import localforage from 'localforage';
 // Need update for other data source
 const yAxisMax = 0.04520372170984341;
 const yAxisMin = -0.048360452973841644;
-const yIncrementPerChannel = yAxisMax - yAxisMin / 2;
+// const yIncrementPerChannel = yAxisMax - yAxisMin / 2;
+const yIncrementPerChannel = yAxisMax;
 
 const initRawPlotData = async () => {
     let rawPlotData = Array.from({length: 22}, (_, i) =>
@@ -53,7 +54,7 @@ const BrainwaveGraph = ({ data }) => {
                     let layout = {
                         autosize: false,
                         width: 850,
-                        height: 1400,
+                        height: 2000,
                         margin: {
                             l: 50,
                             r: 50,
