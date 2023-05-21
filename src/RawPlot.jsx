@@ -5,27 +5,29 @@ import BrainwaveGraph from "./BrainwaveGraph";
 const RawPlot = ({ isPlotting }) => {
 
     const testIpAddress = "http://0.0.0.0:5777";
+    // const testIpAddress = "http://172.19.114.185:5777";
+
     let fetchCount = 0;
     let readCount = 0;
     const [data, setData] = useState([]);
     const [dataFetched, setDataFetched] = useState(false);
+
+    // Test time
     const [time, setTime] = useState(0);
-    let shouldFetch = isPlotting;
+    const [realTime, setRealTime] = useState(0);
 
     const fetchData = async () => {
         try {
-            if (shouldFetch) {
-                const response = await fetch(testIpAddress + "/raw");
-                const jsonData = await response.json();
-                const { raw: rawData } = jsonData;
-                // Save data to localForage
-                localforage.setItem(`raw_${fetchCount}`, rawData).then(() => {
-                    fetchCount += 1;
-                    if (shouldFetch) {
-                        fetchData();
-                    }
-                });
-            }
+            const response = await fetch(testIpAddress + "/raw");
+            const jsonData = await response.json();
+            const { raw: rawData } = jsonData;
+            // Save data to localForage
+            localforage.setItem(`raw_${fetchCount}`, rawData).then(() => {
+                fetchCount += 1;
+                if (isPlotting) {
+                    fetchData();
+                }
+            });
         } catch (e) {
             console.error("Error fetching data from plot: ", e);
         }
@@ -39,10 +41,6 @@ const RawPlot = ({ isPlotting }) => {
             const readData = await localforage.getItem(`raw_${readCount}`);
             let subArrayIndex = 0;
             const sendSubArrayToGraph = setInterval(() => {
-                if (!isPlotting) {
-                    clearInterval(sendSubArrayToGraph);
-                    return;
-                }
                 if (subArrayIndex < readData.length) {
                     setData(readData[subArrayIndex]);
                     setTime((prevState) => prevState + 1);
@@ -59,7 +57,6 @@ const RawPlot = ({ isPlotting }) => {
     };
 
     useEffect(() => {
-        shouldFetch = isPlotting;
         if (isPlotting) {
             if (!dataFetched) {
                 fetchData().then(r => setDataFetched(true));
@@ -76,7 +73,7 @@ const RawPlot = ({ isPlotting }) => {
                         clearInterval(readDataInterval);
                     };
                 }
-            }, 60000);
+            }, 30000);
         }
     }, [isPlotting]);
 

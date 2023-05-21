@@ -18,16 +18,18 @@ const Main = () => {
 
     const handleStop = () => {
         setIsPlotting(false);
-    };
-
-    const handleFinish = () => {
         setIsFinished(true);
+        setIsReadingData(true)
+        setTimeout(() => {
+            window.location.reload();
+        }, 1000);
     };
 
     return (
         <div>
             <Header />
             <Popup isOpen={isPlotting && !isReadingData} message={"Preparing Data"} />
+            <Popup isOpen={isFinished} message={"Stopping.."} />
             <div className="main-container" style={{
                 display: "flex",
                 flexDirection: "row",

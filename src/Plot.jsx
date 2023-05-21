@@ -4,15 +4,21 @@ import Graph from "./Graph";
 import PredictDataContext from "./DownloadDataContext";
 
 const Plot = ({ isPlotting, onReadData }) => {
+    // Set IP address of backend
     const testIpAddress = "http://0.0.0.0:5777";
     // const testIpAddress = "http://172.19.114.185:5777";
 
+    // Set out of boundary guard
     let fetchCount = 0;
     let readCount = 0;
-    let shouldFetch = isPlotting;
+
+    // Set required hook & util
     const [data, setData] = useState([]);
     const [dataFetched, setDataFetched] = useState(false);
     const { setPredictData } = useContext(PredictDataContext);
+
+    // Set abort controller
+    const [readCatchFetch, setReadCatchFetch] = useState(false);
 
     // Set unique id for this experiment for download from localstorage
     const makeId = (idLength) => {
@@ -54,15 +60,14 @@ const Plot = ({ isPlotting, onReadData }) => {
 
     const fetchData = async () => {
         try {
-            // Only fetch if shouldFetch is true
-            if (shouldFetch) {
+            if (isPlotting) {
                 const response = await fetch(testIpAddress + "/probs");
                 const jsonData = await response.json();
                 const { probs: predictData } = jsonData;
 
                 localforage.setItem(`probs_${fetchCount}`, predictData).then(() => {
                     fetchCount += 1;
-                    if (shouldFetch) {
+                    if (isPlotting) {
                         fetchData();
                     }
                 });
@@ -94,6 +99,11 @@ const Plot = ({ isPlotting, onReadData }) => {
                     clearInterval(sendSubArrayToGraph);
                     localforage.removeItem(`probs_${readCount}`)
                     readCount += 1;
+                    if (readCount === fetchCount) {
+                        console.log("Fetch: ", fetchCount);
+                        console.log("Read: ", readCount);
+                        setReadCatchFetch(true);
+                    }
                 }
             }, 1000);
         } catch (e) {
@@ -102,6 +112,7 @@ const Plot = ({ isPlotting, onReadData }) => {
     };
 
     useEffect(() => {
+        console.log('isPlotting:  ', isPlotting);
         if (isPlotting) {
             if (!dataFetched) {
                 fetchData().then(r => setDataFetched(true));
@@ -120,9 +131,18 @@ const Plot = ({ isPlotting, onReadData }) => {
                         clearInterval(readDataInterval);
                     };
                 }
-            }, 60000);
+            }, 30000);
         }
     }, [isPlotting]);
+
+    useEffect(() => {
+        if (isPlotting && readCatchFetch) {
+            alert("Current experiment reach time limit.")
+            setTimeout(() => {
+                window.location.reload();
+            }, 3000);
+        }
+    }, [readCatchFetch, isPlotting]);
 
     return (
         <div
