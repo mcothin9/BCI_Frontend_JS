@@ -1,16 +1,41 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import localforage from "localforage";
 
-const Graph = ({ data }) => {
+const Graph = ({ data, classNamesState }) => {
+    const [classNames, setClassNames] = useState([]);
+
+    useEffect(() => {
+        // Fetch class names from localForage when component mounts
+        const fetchClassNames = async () => {
+            let classNamesDB = await localforage.getItem('classNames');
+            console.log(classNamesDB);
+            if (classNamesDB) {
+                setClassNames(classNamesDB);
+            }
+        }
+
+        // Use setTimeout to delay the execution of fetchClassNames
+        const timer = setTimeout(() => {
+            fetchClassNames().then(r => null);
+        }, 10); // delay is 100ms
+
+        // Cleanup function
+        return () => {
+            clearTimeout(timer);
+        };
+    }, [classNamesState]);
+
+
     const prepareChartData = () => {
-        if (!data) return [];
+        if (!data || !classNames) return [];
 
-        return [
-            { name: "rt1", value: data[0] },
-            { name: "rt2", value: data[1] },
-            { name: "rt3", value: data[2] },
-            { name: "rt4", value: data[3] },
-        ];
+        // const classNames = localforage.getItem('classNames');
+
+        return classNames.map((className, index) => ({
+            name: className,
+            value: data[index],
+        }));
     };
 
     return (

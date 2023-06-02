@@ -15,7 +15,42 @@ const Plot = ({ isPlotting, onReadData }) => {
     // Set required hook & util
     const [data, setData] = useState([]);
     const [dataFetched, setDataFetched] = useState(false);
-    const { setPredictData } = useContext(PredictDataContext);
+    // const { setPredictData } = useContext(PredictDataContext);
+    const [classNumber, setClassNumber] = useState(null);
+    const [classNames, setClassNames] = useState([]);
+    const [classNamesState, setClassNamesState] = useState(false);
+    const [isDialogOpen, setIsDialogOpen] = useState(true);
+
+    // Detect number of class
+    const fetchChannel = async () => {
+        try {
+            const response = await fetch(testIpAddress + "/channel");
+            const jsonData = await response.json();
+            const { channelCount, classCount } = jsonData;
+            setClassNumber(classCount);
+            // Initialize classNames to have classCount number of empty strings
+            setClassNames(new Array(classCount).fill(''));
+            localforage.setItem('classNames', new Array(classCount).fill('')).then(r => null);
+        } catch (e) {
+            console.error("Error fetching data from plot: ", e);
+        }
+    };
+
+    // Update class names based on user input
+    const handleClassNamesChange = (index, newValue) => {
+        let newNames = [...classNames];
+        newNames[index] = newValue;
+        setClassNames(newNames);
+        localforage.setItem('classNames', newNames).then(r => null);
+        console.log("Class names changed: ", newNames);
+    }
+
+    // Control the popup window for user input class names
+    const handleClassNamesSubmit = (event) => {
+        event.preventDefault();
+        setIsDialogOpen(false);
+        setClassNamesState(true);
+    }
 
     // Set abort controller
     const [readCatchFetch, setReadCatchFetch] = useState(false);
@@ -41,7 +76,7 @@ const Plot = ({ isPlotting, onReadData }) => {
         const newResult = [...savedData, ...data];
         localStorage.setItem(resultIdInLocalstorage, JSON.stringify(newResult));
         // Send new result to userContext
-        setPredictData(newResult);
+        // setPredictData(newResult);
     };
 
     // Update the reference (key) list of saved result in localstorage
@@ -112,6 +147,15 @@ const Plot = ({ isPlotting, onReadData }) => {
     };
 
     useEffect(() => {
+        fetchChannel().then(r => null);
+    }, []);
+
+    // useEffect(() => {
+    //     console.log("Plot component rendered");
+    // }, []);
+
+
+    useEffect(() => {
         console.log('isPlotting:  ', isPlotting);
         if (isPlotting) {
             if (!dataFetched) {
@@ -155,7 +199,32 @@ const Plot = ({ isPlotting, onReadData }) => {
                 height: "100%",
             }}
         >
-            <Graph data={data} />
+            <Graph data={data} classNamesState={classNamesState} />
+            {isDialogOpen && (
+                <div style={{position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                    <div style={{backgroundColor: 'white', padding: '20px', borderRadius: '10px', maxWidth: '90%'}}>
+                        <h2>Class Configuration</h2>
+                        {classNumber === null ? (
+                            <p>Counting classes...</p>
+                        ) : (
+                            <form onSubmit={handleClassNamesSubmit}>
+                                {classNames.map((name, index) => (
+                                    <input
+                                        key={index}
+                                        placeholder={`Class ${index + 1}`}
+                                        value={name}
+                                        onChange={(event) => handleClassNamesChange(index, event.target.value)}
+                                        style={{display: 'block', width: '100%', marginBottom: '10px'}}
+                                    />
+                                ))}
+                                <button type="submit" disabled={classNames.some(name => name === '')}>
+                                    Submit
+                                </button>
+                            </form>
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

@@ -9,13 +9,13 @@ const yAxisMin = -0.048360452973841644;
 // const yIncrementPerChannel = yAxisMax - yAxisMin / 2;
 const yIncrementPerChannel = yAxisMax;
 
-const initRawPlotData = async () => {
-    let rawPlotData = Array.from({length: 22}, (_, i) =>
-        Array.from({length: 1004}, () => i * yIncrementPerChannel)
-    );
-    await localforage.setItem('rawPlotData', rawPlotData);
-    console.log("Initialized rawPlotData:", rawPlotData);  // Debugging line
-};
+// const initRawPlotData = async () => {
+//     let rawPlotData = Array.from({length: 22}, (_, i) =>
+//         Array.from({length: 1004}, () => i * yIncrementPerChannel)
+//     );
+//     await localforage.setItem('rawPlotData', rawPlotData);
+//     console.log("Initialized rawPlotData:", rawPlotData);  // Debugging line
+// };
 
 // Function to adjust the data based on yIncrementPerChannel
 const changeDataRange = (data) => {
@@ -25,9 +25,10 @@ const changeDataRange = (data) => {
 };
 
 // Initiate the localforage when render the page
-initRawPlotData().then(r => null);
+// initRawPlotData().then(r => null);
 
-const BrainwaveGraph = ({ data }) => {
+const BrainwaveGraph = ({ data, channel }) => {
+    console.log("Channel in BWG: " + channel);
     // Initialize timeProcess array
     const timeProcess = Array.from({length: 1004}, (_, i) => i);
 
@@ -37,7 +38,7 @@ const BrainwaveGraph = ({ data }) => {
             if (data && data.length > 0) {  // Check if data is non-empty
                 let newData = changeDataRange(data);
                 // console.log("Adjusted data:", newData);  // Debugging line
-                for(let i = 0; i < 22; i++) {
+                for(let i = 0; i < channel; i++) {
                     rawPlotData[i] = [...rawPlotData[i].slice(251), ...newData[i]];
                 }
                 localforage.setItem('rawPlotData', rawPlotData).then(rawPlotData => {
@@ -47,7 +48,7 @@ const BrainwaveGraph = ({ data }) => {
                         y: channelData,
                         type: 'scatter',
                         name: `Channel_${index+1}`,
-                        line: {color: `hsl(${360 * index / 22}, 50%, 50%)`} // HSL color with equal increments for each channel
+                        line: {color: `hsl(${360 * index / channel}, 50%, 50%)`} // HSL color with equal increments for each channel
                     }));
 
                     // Define the layout

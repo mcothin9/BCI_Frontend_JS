@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect, useRef} from "react";
 import localforage from "localforage";
 import BrainwaveGraph from "./BrainwaveGraph";
 
@@ -9,12 +9,26 @@ const RawPlot = ({ isPlotting }) => {
 
     let fetchCount = 0;
     let readCount = 0;
+    // let channelNumber = 1;
+    const [channelNumber, setChannelNumber] = useState(1);
     const [data, setData] = useState([]);
     const [dataFetched, setDataFetched] = useState(false);
 
     // Test time
     const [time, setTime] = useState(0);
     const [realTime, setRealTime] = useState(0);
+
+    const fetchChannel = async () => {
+        try {
+            const response = await fetch(testIpAddress + "/channel");
+            const jsonData = await response.json();
+            const { channelCount, classCount } = jsonData;
+            setChannelNumber(channelCount);
+            // channelNumber = channelCount;
+        } catch (e) {
+            console.error("Error fetching data from plot: ", e);
+        }
+    };
 
     const fetchData = async () => {
         try {
@@ -56,6 +70,16 @@ const RawPlot = ({ isPlotting }) => {
         }
     };
 
+    // Detect channel number when page first render
+    useEffect(() => {
+        fetchChannel().then(r => null);
+    }, []);
+
+    // useEffect(() => {
+    //     console.log("Channel in RawPlot: " + channelNumber);
+    // }, [channelNumber]);
+
+
     useEffect(() => {
         if (isPlotting) {
             if (!dataFetched) {
@@ -81,7 +105,7 @@ const RawPlot = ({ isPlotting }) => {
         <div>
             {/*<p>Raw data process: {time} </p>*/}
             {/*<p>Real time: {realTime} </p>*/}
-            <BrainwaveGraph data={data} />
+            <BrainwaveGraph data={data} channel={channelNumber} />
         </div>
     );
 };
